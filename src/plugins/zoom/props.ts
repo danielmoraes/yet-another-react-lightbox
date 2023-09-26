@@ -1,7 +1,7 @@
 import { LightboxProps } from "../../index.js";
 
 export const defaultZoomProps = {
-    maxZoomPixelRatio: 1,
+    maxZoomPixelRatio: 3,
     zoomInMultiplier: 2,
     doubleTapDelay: 300,
     doubleClickDelay: 500,
