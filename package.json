@@ -1,6 +1,6 @@
 {
-  "name": "yet-another-react-lightbox",
-  "version": "0.0.0-semantic-release",
+  "name": "@danielmoraes/yet-another-react-lightbox",
+  "version": "0.0.1",
   "description": "Modern React lightbox component",
   "author": "Igor Danchenko",
   "license": "MIT",
@@ -141,7 +141,7 @@
   "homepage": "https://yet-another-react-lightbox.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/igordanchenko/yet-another-react-lightbox.git"
+    "url": "git+https://github.com/igordanchenko/yet-another-react-lightbox.git"
   },
   "bugs": {
     "url": "https://github.com/igordanchenko/yet-another-react-lightbox/issues"
@@ -225,5 +225,10 @@
     "react lightbox",
     "react image lightbox",
     "react photo lightbox"
-  ]
+  ],
+  "main": "fixup-dist.js",
+  "directories": {
+      "doc": "docs",
+      "test": "test"
+  }
 }
