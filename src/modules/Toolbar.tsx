@@ -28,14 +28,17 @@ export function Toolbar({ toolbar: { buttons }, render: { buttonClose, iconClose
     };
 
     return (
-        <div
-            ref={setContainerRef}
-            style={styles.toolbar}
-            className={cssClass(cssPrefix())}
-            {...stopNavigationEventsPropagation()}
-        >
-            {buttons?.map((button) => (button === ACTION_CLOSE ? renderCloseButton() : button))}
-        </div>
+        <>
+            <div style={{ position: "absolute", top: 0, right: 0 }}>{renderCloseButton()}</div>
+            <div
+                ref={setContainerRef}
+                style={styles.toolbar}
+                className={cssClass(cssPrefix())}
+                {...stopNavigationEventsPropagation()}
+            >
+                {buttons?.map((button) => (button === ACTION_CLOSE ? null : button))}
+            </div>
+        </>
     );
 }
 
