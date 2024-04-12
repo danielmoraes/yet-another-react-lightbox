@@ -112,7 +112,7 @@ function fixupPluginsImports(file) {
 function fixupPluginsModuleAugmentation(file) {
   editFile(file, (data) => {
     const regex = /declare module "\.\.\/\.\.\/types.js"/g;
-    return data.replaceAll(regex, 'declare module "yet-another-react-lightbox"');
+    return data.replaceAll(regex, 'declare module "@danielmoraes/yet-another-react-lightbox"');
   });
 }
 
