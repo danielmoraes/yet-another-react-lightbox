@@ -26,7 +26,7 @@ export function useZoomSensors(
 ) {
     const activePointers = React.useRef<React.PointerEvent[]>([]);
     const lastPointerDown = React.useRef(0);
-    const pointerHasMoved = React.useRef(false);
+    const hasPointerMoved = React.useRef(false);
     const pinchZoomDistance = React.useRef<number>();
 
     const { globalIndex } = useLightboxState();
@@ -138,7 +138,7 @@ export function useZoomSensors(
             event.stopPropagation();
         }
 
-        pointerHasMoved.current = false;
+        hasPointerMoved.current = false;
 
         replacePointer(event);
 
@@ -153,7 +153,7 @@ export function useZoomSensors(
         const activePointer = pointers.find((p) => p.pointerId === event.pointerId);
 
         if (pointers.length === 1) {
-            pointerHasMoved.current = true;
+            hasPointerMoved.current = true;
         }
 
         if (pointers.length === 2 && pinchZoomDistance.current) {
@@ -203,7 +203,7 @@ export function useZoomSensors(
                 pinchZoomDistance.current = undefined;
             }
 
-            if (pointers.length === 1 && !pointerHasMoved.current) {
+            if (pointers.length === 1 && !hasPointerMoved.current) {
                 changeZoom(
                     zoom !== maxZoom ? zoom * Math.max(maxZoom ** (1 / doubleClickMaxStops), zoomInMultiplier) : 1,
                     false,
