@@ -27,6 +27,7 @@ export function useZoomSensors(
     const activePointers = React.useRef<React.PointerEvent[]>([]);
     const lastPointerDown = React.useRef(0);
     const hasPointerMoved = React.useRef(false);
+    const hasPinched = React.useRef(false);
     const pinchZoomDistance = React.useRef<number>();
 
     const { globalIndex } = useLightboxState();
@@ -139,11 +140,13 @@ export function useZoomSensors(
         }
 
         hasPointerMoved.current = false;
+        hasPinched.current = false;
 
         replacePointer(event);
 
         if (pointers.length === 2) {
             pinchZoomDistance.current = distance(pointers[0], pointers[1]);
+            hasPinched.current = true;
         }
     });
 
@@ -176,6 +179,8 @@ export function useZoomSensors(
                 pinchZoomDistance.current = currentDistance;
             }
 
+            hasPinched.current = true;
+
             return;
         }
 
@@ -199,11 +204,7 @@ export function useZoomSensors(
         (event: React.PointerEvent) => {
             const pointers = activePointers.current;
 
-            if (pointers.length === 2 && pointers.find((p) => p.pointerId === event.pointerId)) {
-                pinchZoomDistance.current = undefined;
-            }
-
-            if (pointers.length === 1 && !hasPointerMoved.current) {
+            if (pointers.length === 1 && !hasPointerMoved.current && !hasPinched.current) {
                 changeZoom(
                     zoom !== maxZoom ? zoom * Math.max(maxZoom ** (1 / doubleClickMaxStops), zoomInMultiplier) : 1,
                     false,
@@ -211,9 +212,13 @@ export function useZoomSensors(
                 );
             }
 
+            if (pointers.length === 2 && pointers.find((p) => p.pointerId === event.pointerId)) {
+                pinchZoomDistance.current = undefined;
+            }
+
             clearPointer(event);
         },
-        [clearPointer, changeZoom, zoom, maxZoom, doubleClickMaxStops, zoomInMultiplier, translateCoordinates]
+        [changeZoom, clearPointer, doubleClickMaxStops, maxZoom, translateCoordinates, zoom, zoomInMultiplier]
     );
 
     const cleanupSensors = React.useCallback(() => {
