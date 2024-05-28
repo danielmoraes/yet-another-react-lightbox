@@ -12,7 +12,7 @@ function renderLightbox(props?: LightboxExternalProps) {
 
 function testMainScenario() {
     expect(screen.queryByRole("presentation")).toBeInTheDocument();
-    expect(screen.queryByLabelText("Close")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Close")).toBeInTheDocument();
     expect(screen.queryByLabelText("Previous")).toBeInTheDocument();
     expect(screen.queryByLabelText("Next")).toBeInTheDocument();
 }
