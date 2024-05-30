@@ -26,6 +26,8 @@ export function useZoomSensors(
 ) {
     const activePointers = React.useRef<React.PointerEvent[]>([]);
     const lastPointerDown = React.useRef(0);
+    const hasPointerMoved = React.useRef(false);
+    const hasPinched = React.useRef(false);
     const pinchZoomDistance = React.useRef<number>();
 
     const { globalIndex } = useLightboxState();
@@ -35,8 +37,6 @@ export function useZoomSensors(
         zoomInMultiplier,
         wheelZoomDistanceFactor,
         scrollToZoom,
-        doubleTapDelay,
-        doubleClickDelay,
         doubleClickMaxStops,
         pinchZoomDistanceFactor,
     } = useZoomProps();
@@ -139,25 +139,14 @@ export function useZoomSensors(
             event.stopPropagation();
         }
 
-        const { timeStamp } = event;
-        if (
-            pointers.length === 0 &&
-            timeStamp - lastPointerDown.current < (event.pointerType === "touch" ? doubleTapDelay : doubleClickDelay)
-        ) {
-            lastPointerDown.current = 0;
-            changeZoom(
-                zoom !== maxZoom ? zoom * Math.max(maxZoom ** (1 / doubleClickMaxStops), zoomInMultiplier) : 1,
-                false,
-                ...translateCoordinates(event)
-            );
-        } else {
-            lastPointerDown.current = timeStamp;
-        }
+        hasPointerMoved.current = false;
+        hasPinched.current = false;
 
         replacePointer(event);
 
         if (pointers.length === 2) {
             pinchZoomDistance.current = distance(pointers[0], pointers[1]);
+            hasPinched.current = true;
         }
     });
 
@@ -165,6 +154,10 @@ export function useZoomSensors(
         const pointers = activePointers.current;
 
         const activePointer = pointers.find((p) => p.pointerId === event.pointerId);
+
+        if (pointers.length === 1) {
+            hasPointerMoved.current = true;
+        }
 
         if (pointers.length === 2 && pinchZoomDistance.current) {
             event.stopPropagation();
@@ -185,6 +178,8 @@ export function useZoomSensors(
 
                 pinchZoomDistance.current = currentDistance;
             }
+
+            hasPinched.current = true;
 
             return;
         }
@@ -209,13 +204,21 @@ export function useZoomSensors(
         (event: React.PointerEvent) => {
             const pointers = activePointers.current;
 
+            if (pointers.length === 1 && !hasPointerMoved.current && !hasPinched.current) {
+                changeZoom(
+                    zoom !== maxZoom ? zoom * Math.max(maxZoom ** (1 / doubleClickMaxStops), zoomInMultiplier) : 1,
+                    false,
+                    ...translateCoordinates(event)
+                );
+            }
+
             if (pointers.length === 2 && pointers.find((p) => p.pointerId === event.pointerId)) {
                 pinchZoomDistance.current = undefined;
             }
 
             clearPointer(event);
         },
-        [clearPointer]
+        [changeZoom, clearPointer, doubleClickMaxStops, maxZoom, translateCoordinates, zoom, zoomInMultiplier]
     );
 
     const cleanupSensors = React.useCallback(() => {
