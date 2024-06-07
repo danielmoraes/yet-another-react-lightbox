@@ -141,10 +141,10 @@
     "homepage": "https://yet-another-react-lightbox.com",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/igordanchenko/yet-another-react-lightbox.git"
+        "url": "git+https://github.com/danielmoraes/yet-another-react-lightbox.git"
     },
     "bugs": {
-        "url": "https://github.com/igordanchenko/yet-another-react-lightbox/issues"
+        "url": "https://github.com/danielmoraes/yet-another-react-lightbox/issues"
     },
     "engines": {
         "node": ">=14"
